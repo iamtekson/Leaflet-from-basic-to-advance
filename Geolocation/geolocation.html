@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Geolocation</title>
+	<link rel="stylesheet" type="text/css" href="lib/leaflet.css">
+</head>
+<body>
+	<div id="map" style="width:600px; height: 400px"></div>
+	<script type="text/javascript" src="lib/leaflet.js"></script>
+
+	<script>
+		var map = L.map('map').setView([28.2380, 83.9956], 11);
+		mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {attribution: 'Leaflet &copy; ' + mapLink + ', contribution', maxZoom: 18}).addTo(map);
+
+
+
+		setInterval(function() {
+			if (navigator.geolocation) {
+		  // 🗺️ yep, we can proceed!
+		  if (navigator.geolocation) {
+			  navigator.geolocation.getCurrentPosition(displayLocationInfo);
+			}
+
+			function displayLocationInfo(position) {
+			  const lng = position.coords.longitude;
+			  const lat = position.coords.latitude;
+
+			  console.log(`longitude: ${ lng } | latitude: ${ lat }`);
+			  L.circle([lat, lng], {
+			  	radius: 1000,
+			  	opacity: 1,
+			  	weight:1,
+			  	fillopactity: 1,
+			  	fillColor: 'blue'
+			  }).addTo(map);
+			}
+		} else {
+		  // no can do
+		  console.log('You dont have geolocation');
+		}
+		}, 1000);
+
+		
+	</script>
+
+
+</body>
+</html>

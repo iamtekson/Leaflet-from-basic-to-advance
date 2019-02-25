@@ -1,0 +1,48 @@
+{
+  "name": "leaflet-routing-machine",
+  "version": "3.2.12",
+  "description": "Routing for Leaflet",
+  "directories": {
+    "example": "examples",
+    "dist": "dist"
+  },
+  "scripts": {
+    "prepare": "browserify -t browserify-shim -p browserify-derequire -o dist/leaflet-routing-machine.js src/index.js && uglifyjs dist/leaflet-routing-machine.js >dist/leaflet-routing-machine.min.js",
+    "publish": "scripts/publish.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/perliedman/leaflet-routing-machine.git"
+  },
+  "keywords": [
+    "leaflet",
+    "routing",
+    "osrm"
+  ],
+  "author": {
+    "name": "Per Liedman",
+    "email": "per@liedman.net"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/perliedman/leaflet-routing-machine/issues"
+  },
+  "homepage": "https://github.com/perliedman/leaflet-routing-machine",
+  "browserify-shim": {
+    "leaflet": "global:L"
+  },
+  "main": "./dist/leaflet-routing-machine.js",
+  "devDependencies": {
+    "browserify": "^14.1.0",
+    "browserify-derequire": "^0.9.4",
+    "browserify-shim": "^3.8.13",
+    "derequire": "^2.0.6",
+    "uglify-js": "^2.8.2"
+  },
+  "dependencies": {
+    "@mapbox/corslite": "0.0.7",
+    "@mapbox/polyline": "^0.2.0",
+    "osrm-text-instructions": "^0.13.2"
+  }
+}

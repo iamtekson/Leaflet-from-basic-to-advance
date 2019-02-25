@@ -1,0 +1,2 @@
+Mapshaper : This plays the valuable role for reduce the file size. It can handle big data problem.
+Togeojson : this converts kml file to json file

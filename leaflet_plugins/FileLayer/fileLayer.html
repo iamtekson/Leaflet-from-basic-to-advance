@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>File Layer Practice</title>
+	<link rel="stylesheet" type="text/css" href="lib/leaflet.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+</head>
+<body>
+	<div id="map", style="width: 600px; height: 400px"></div>
+
+	<script type="text/javascript" src="lib/leaflet.js"></script>
+	<script type="text/javascript" src="lib/leaflet.filelayer.js"></script>
+
+	<script
+		src="lib/togeojson.js">
+	</script>
+
+	<script>
+		var map = L.map('map').fitWorld().setView([51.505, -0.09], 13);
+	     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+	         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	     }).addTo(map);
+
+
+	         L.Control.fileLayerLoad({
+        // Allows you to use a customized version of L.geoJson.
+        // For example if you are using the Proj4Leaflet leaflet plugin,
+        // you can pass L.Proj.geoJson and load the files into the
+        // L.Proj.GeoJson instead of the L.geoJson.
+        layer: L.geoJson,
+        // See http://leafletjs.com/reference.html#geojson-options
+        layerOptions: {style: {color:'red'}},
+        // Add to map after loading (default: true) ?
+        addToMap: true,
+        // File size limit in kb (default: 1024) ?
+        fileSizeLimit: 1024,
+        // Restrict accepted file formats (default: .geojson, .json, .kml, and .gpx) ?
+        formats: [
+            '.geojson',
+            '.kml'
+        ]
+    }).addTo(map);
+
+
+	      var control = L.Control.fileLayerLoad();
+    control.loader.on('data:loaded', function (event) {
+        // event.layer gives you access to the layers you just uploaded!
+
+        // Add to map layer switcher
+        layerswitcher.addOverlay(event.layer, event.filename);
+    });
+
+     var control = L.Control.fileLayerLoad();
+    control.loader.on('data:error', function (error) {
+        // Do something usefull with the error!
+        console,error(error);
+    });
+			     
+	</script>
+</body>
+</html>

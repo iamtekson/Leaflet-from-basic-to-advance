@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Leaflet Map</title>
+<meta charset="utf-8" />
+<!-- Leaflet CSS/js -->
+<link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css">
+
+</head>
+<body>
+	<div id="demo" style="width: 600px; height: 400px"></div>
+	<script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
+
+	<script>
+
+/*====================
+Adding  Base Map
+====================*/
+		/*	var map = L.map('demo').setView([-41.2858, 174.78682], 8);
+		mapLink =
+		'<a href="http://openstreetmap.org">OpenStreetMap</a>';
+		L.tileLayer(
+		'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: 'Map data &copy; ' + mapLink,
+		maxZoom: 18,
+		}).addTo(map);*/
+
+
+/* ====================
+ Adding  Multiple tile layers
+==================== */
+var osmLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>',
+	thunLink = '<a href="http://thunderforest.com/">Thunderforest</a>';
+
+var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+	osmAttrib = '&copy; ' + osmLink + ' Contributors',
+	landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
+	thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
+
+var osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib}),
+	landMap = L.tileLayer(landUrl, {attribution: thunAttrib});
+
+var map = L.map('demo', {
+	layers:[osmMap]}).setView([-41.2858, 174.78682], 8);
+
+var baseLayers = {
+	"OSM Mapnik": osmMap,
+	"Landscape": landMap
+	};
+
+// L.control.layers(baseLayers).addTo(map);
+
+
+
+/* ====================
+Adding  Single Marker
+==================== */
+		/*var marker = L.marker([-41.29042, 174.78219], {draggable:true}, {title: 'Hover Text'}, {opacity: .5})
+		.addTo(map)
+		.bindPopup('<b>Te Papa</b>')
+		.openPopup();*/
+
+/* ====================
+Adding  Multiple Markers
+==================== */
+		var markers = [
+			["7C6B07",-40.99497,174.50808],
+			["7C6B38",-41.30269,173.63696],
+			["7C6CA1",-41.49413,173.5421],
+			["7C6CA2",-40.98585,174.50659],
+			["C81D9D",-40.93163,173.81726],
+			["C82009",-41.5183,174.78081],
+			["C82081",-41.42079,173.5783],
+			["C820AB",-42.08414,173.96632],
+			["C820B6",-41.51285,173.53274]
+		];
+		for (var i = 0; i<markers.length; i++){
+			marker = new L.marker([markers[i][1], markers[i][2]])
+			.bindPopup(markers[i][0])
+			.addTo(map);
+		}
+
+/* ====================
+ Adding  lines on our map 
+==================== */
+var polyline = L.polyline([
+	[-40.286, 175.796],
+	[-41.281, 176.086],
+	[-41.279, 175.776],
+	[-41.290, 174.075],
+	[-42.292, 174.788]
+	],
+		{
+			color: 'red',
+			weight: 10,
+			opacity: .7,
+			dashArray: '20,15',
+			lineJoin: 'round'
+		}
+).addTo(map);
+
+/* ====================
+ Overlaying Information Interactively on Map
+==================== */
+var coolPlaces = new L.LayerGroup();
+
+		L.marker([-41.29042, 174.78219])
+		.bindPopup('Te Papa').addTo(coolPlaces),
+		L.marker([-41.29437, 174.78405])
+		.bindPopup('Embassy Theatre').addTo(coolPlaces),
+		L.marker([-41.2895, 174.77803])
+		.bindPopup('Michael Fowler Centre').addTo(coolPlaces),
+		L.marker([-41.28313, 174.77736])
+		.bindPopup('Leuven Belgin Beer Cafe').addTo(coolPlaces),
+
+		L.polyline([
+		[-41.28313, 174.77736],
+		[-41.2895, 174.77803],
+		[-41.29042, 174.78219],
+		[-41.29437, 174.78405]
+		]
+		).addTo(coolPlaces);
+
+		var overlays = {
+		"Interesting places": coolPlaces
+		};
+L.control.layers(baseLayers,overlays).addTo(map);
+
+</script>
+</body>
+</html>
