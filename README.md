@@ -64,7 +64,7 @@ Inside this folder, I write the code to redirect the user location. It takes the
 ## Responsive sidebar for leaflet
 This is actually a plugin. This plugin can be found at [leaflet-sidebar-v2](https://github.com/Turbo87/sidebar-v2)
 ## Search box
-This is also a plugin for searching the [OpenStreetMap](https://osm.org) locations. For more information goto [leaflet-search] (https://github.com/stefanocudini/leaflet-search)
+This is also a plugin for searching the [OpenStreetMap](https://osm.org) locations. For more information goto [leaflet-search](https://github.com/stefanocudini/leaflet-search)
 ## Animation Routing 
 Inside this folder, I use [leaflet-router-machine](http://www.liedman.net/leaflet-routing-machine/tutorials/) plugin. for more information goto [leaflet-routing-machine](http://www.liedman.net/leaflet-routing-machine/tutorials/) 
 ## Draw
