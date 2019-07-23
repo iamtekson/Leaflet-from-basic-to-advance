@@ -3,12 +3,60 @@ This repo contain all the __basic ideas__ about the leaflet. I added various fun
 ## Basic
 Inside this folder I added following functionalities.
 * Adding base map
+```
+var map = L.map('map').setView([28.2521, 83.9774], 18);
+var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map); 
+```
 * Adding multiple base layers
+```
+var baseLayers = {
+	"OSM Mapnik": osmMap,
+	"Landscape": landMap
+	};
+
+L.control.layers(baseLayers).addTo(map);
+
+```
 * Adding multiple markers
+```
+var markers = [
+			["7C6B07",-40.99497,174.50808],
+			["7C6B38",-41.30269,173.63696],
+			["C820B6",-41.51285,173.53274]
+		];
+		for (var i = 0; i<markers.length; i++){
+			marker = new L.marker([markers[i][1], markers[i][2]])
+			.bindPopup(markers[i][0])
+			.addTo(map);
+		}
+```
 * Adding lines on leaflet map
+```
+var polyline = L.polyline([
+	[-40.286, 175.796],
+	[-41.281, 176.086],
+	[-41.279, 175.776],
+	[-41.290, 174.075],
+	[-42.292, 174.788]
+	],
+		{
+			color: 'red',
+			weight: 10,
+			opacity: .7,
+			dashArray: '20,15',
+			lineJoin: 'round'
+		}
+).addTo(map);
+```
 ## GeoJSON
 Inside this folder I added following functionalities.
 * Adding Geojson in map
+```
+L.geoJSON(json_data).addTo(map);
+```
 * Custom Popup in Geojson
 * Custom style in Geojson
 ## Geolocation
