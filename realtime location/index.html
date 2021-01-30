@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaflet Tutorial</title>
+    <title>Realtime location tracker</title>
 
     <!-- leaflet css  -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -19,26 +19,11 @@
             width: 100%;
             height: 100vh;
         }
-
-        .coordinate {
-            position: absolute;
-            bottom: 10px;
-            right: 50%;
-        }
-
-        .leaflet-popup-content-wrapper {
-            background-color: #000000;
-            color: #fff;
-            border: 1px solid red;
-            border-radius: 0px;
-        }
     </style>
 </head>
 
 <body>
-    <div id="map">
-        <div class="leaflet-control coordinate"></div>
-    </div>
+    <div id="map"></div>
 </body>
 
 </html>
@@ -48,7 +33,7 @@
 
 <script>
     // Map initialization 
-    var map = L.map('map').setView([14.0860746, 100.608406], 20);
+    var map = L.map('map').setView([14.0860746, 100.608406], 6);
 
     //osm layer
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -56,25 +41,37 @@
     });
     osm.addTo(map);
 
-    function getPosition(position) {
-        console.log(position, position.coords)
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        let marker = L.marker([latitude, longitude]).addTo(map);
+    //var initialization
+    var marker, circle;
 
-        setInterval(() => {
-            map.removeLayer(marker)
-            marker = L.marker([latitude, longitude])
-            markerGroup = L.featureGroup([marker]).addTo(map)
-            map.fitBounds(markerGroup.getBounds())
-            console.log(latitude, longitude)
-        }, 3000);
-    }
     if (!navigator.geolocation) {
-        status.textContent = 'Geolocation is not supported by your browser';
+        console.log("Your browser doesn't support this feature!")
     } else {
-        status.textContent = 'Locating…';
-        navigator.geolocation.getCurrentPosition(getPosition);
+        setInterval(() => {
+            navigator.geolocation.getCurrentPosition(getPosition)
+        }, 5000);
+    }
+
+    function getPosition(position) {
+        var lat = position.coords.latitude
+        var long = position.coords.longitude
+        var accuracy = position.coords.accuracy
+        if (marker) {
+            map.removeLayer(marker)
+
+        }
+        if (circle) {
+            console.log(circle)
+            map.removeLayer(circle)
+
+        }
+        marker = L.marker([lat, long])
+        circle = L.circle([lat, long], { radius: accuracy })
+        markerGroup = L.featureGroup([marker, circle]).addTo(map)
+
+        map.fitBounds(markerGroup.getBounds())
+
+        console.log("Your coordinate is: lat: " + lat + " long: " + long + " accuracy: " + accuracy)
     }
 
 </script>
