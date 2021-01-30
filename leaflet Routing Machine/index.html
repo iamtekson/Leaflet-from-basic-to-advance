@@ -9,18 +9,15 @@
 
 </head>
 <body>
-	<div id="demo" style="width: 100%; height: 600px"></div>
+	<div id="demo" style="width: 100%; height: 100vh"></div>
 	<script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
 	<script type="text/javascript" src="leaflet-routing-machine.js"></script>
 
 
 	<script>
 
-/*====================
-Adding  Base Map
-====================*/
 		var map = L.map('demo').setView([-41.2858, 174.78682], 8);
-		mapLink =
+		var mapLink =
 		'<a href="http://openstreetmap.org">OpenStreetMap</a>';
 		L.tileLayer(
 		'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -28,12 +25,13 @@ Adding  Base Map
 		maxZoom: 18,
 		}).addTo(map);
 
-		L.Routing.control({
+		var routing = L.Routing.control({
 			waypoints: [
 			L.latLng(-41.2858, 174.78682),
 			L.latLng(-41.2858, 175.78682)
 			]
-		}).addTo(map);
+		})
+		routing.addTo(map);
 
 	</script>
 </body>
