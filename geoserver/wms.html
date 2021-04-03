@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- leaflet css link  -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+
+    <title>Web-GIS with geoserver and leaflet</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
+
+<!-- leaflet js link  -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<!-- jquery link  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- betterWMS  -->
+<script src="./lib/L.TileLayer.BetterWMS.js"></script>
+
+<script>
+  var map = L.map("map").setView([15.6261, -61.44361], 13);
+
+  var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  });
+
+  osm.addTo(map);
+
+  //Getcapabilities request
+  //   http://localhost:8080/geoserver/wms?
+  // service=wms&
+  // version=1.1.1&
+  // request=GetCapabilities
+
+  //   GetMap request
+  var wms_url =
+    "http://localhost:8080/geoserver/topp/wms?service=WMS&version=1.1.0&request=GetMap&layers=topp:BU_2020_A0_S0&bbox=664358.0%2C1727080.0%2C668578.0%2C1730231.0&width=768&height=573&srs=EPSG%3A32620&styles=&format=application/openlayers";
+
+  var layer = L.tileLayer.betterWms("http://localhost:8080/geoserver/wms", {
+    layers: "topp:BU_2020_A0_S0",
+    format: "image/png",
+    transparent: true,
+    attribution: "mylayer",
+  });
+
+  layer.addTo(map);
+</script>
