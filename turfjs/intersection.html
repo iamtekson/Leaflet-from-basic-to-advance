@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <title>Advance spatial operation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+</html>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
+<script src="./data/data.js"></script>
+<script src="./data/nepal-districts.js"></script>
+
+<script>
+    // Map initialization 
+    var map = L.map('map').setView([28.3949, 84.1240], 8);
+
+    //osm layer
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    osm.addTo(map);
+
+    //geoJson Data
+    // L.geoJson(polygon1).addTo(map);
+    // L.geoJson(polygon2).addTo(map);
+    // L.geoJson(nepalGeoJsonData).addTo(map)
+    // L.geoJson(polygon3).addTo(map);
+
+    L.geoJson(nepalGeoJsonData, {
+        onEachFeature: function(feature, layer){
+            var poly1 = feature.geometry
+
+            L.geoJson(polygon2, {
+                onEachFeature: function(feature, layer){
+                    var poly2 = feature.geometry
+                    
+                    var intersection = turf.intersect(poly1, poly2)
+
+                    L.geoJson(intersection).addTo(map)
+                    console.log({poly1, poly2, intersection})
+                }
+            })
+        }
+    })
+
+    
+</script>
