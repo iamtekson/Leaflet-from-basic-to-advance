@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- leaflet css link  -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+
+    <title>Web-GIS with geoserver and leaflet</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
+
+<!-- leaflet js link  -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<!-- jquery link  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<!-- axios  -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- wms capabilities  -->
+<script src="./lib/wms-capabilities.min.js"></script>
+
+<script>
+  var map = L.map("map").setView([15.6261, -61.44361], 13);
+
+  var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  });
+
+  osm.addTo(map);
+
+  var workspace = 'tajikistan'
+  var layer_name = 'Hazard_Landslide'
+  var wms_url = `http://localhost:8080/wms?service=wms&version=1.1.1&request=GetCapabilities&rootLayer=false&namespace=${workspace}:${layer_name}`
+
+  axios.get(wms_url).then((res) => {
+
+// For convert the xml to JSON
+const json = new WMSCapabilities(res.data).toJSON();
+
+// GetCapabilities provides all the layers so we need to filter the required one.
+const layers = json?.Capability?.Layer?.Layer;
+const layer = layers?.filter(
+  (l) => l.Name === `${workspace}:${layer_name}`
+)[0];
+
+// To get the bounding box of the layer
+const bbox = layer?.LatLonBoundingBox;
+
+// Use this bounding box to zoom to the layer,
+map.fitBounds([
+      [bbox[1], bbox[0]],
+      [bbox[3], bbox[2]],
+    ]);
+});
+ 
+  var layer = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+    layers: `${workspace}:${layer_name}`,
+    format: "image/png",
+    transparent: true,
+    attribution: "mylayer",
+  });
+
+  layer.addTo(map);
+</script>

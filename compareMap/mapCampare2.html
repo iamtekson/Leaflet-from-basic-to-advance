@@ -4,7 +4,7 @@
     <meta charset=utf-8 />
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui' />
 
-    <title>Map compare slider view</title>
+    <title>Map compare side by side view</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 	<style>
@@ -12,41 +12,55 @@
             margin: 0;
             padding: 0;
         }
-        #map {
-            width: 100%;
+        .row{
+            display: flex;
+        }
+        .cols {
+            flex:50%;
             height: 100vh;
         }
+        #map1 {
+            border-right: 5px solid red;
+        }
+       
     </style>
 </head>
 
 <body>
-    <div id='map'></div>
+    <div class="row">
+        <div class="cols" id='map1'></div>
+        <div class="cols" id="map2"></div>
+    </div>
 </body>
 </html>
 
 <!-- leaflet js  -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-<!-- leaflet side by side  -->
-<script src="lib/leaflet-side-by-side.min.js"></script>
+
+<!-- map sync file js  -->
+<script src="./lib/L.Map.Sync.js"></script>
+
 
 <script>
-var map = L.map('map').setView([38.8610, 71.2761], 7);
+var map1 = L.map('map1').setView([38.8610, 71.2761], 7);
+var map2 = L.map('map2').setView([38.8610, 71.2761], 7);
 
 // osm
 var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap<\/a> contributors'
-}).addTo(map);
-
-
-//water color map
-var watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
-	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	subdomains: 'abcd',
-	minZoom: 1,
-	maxZoom: 16,
-	ext: 'jpg'
 });
+
+osm.addTo(map1)
+
+
+//google map
+googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+googleHybrid.addTo(map2);
 
 
 // layers from geoserver
@@ -55,19 +69,23 @@ var mf = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
     format: "image/png",
     transparent: true,
     attribution: "mylayer",
-  }).addTo(map);
+  })
+
+  mf.addTo(map2)
 
 var ls = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
     layers: "tajikistan:Hazard_Landslide",
     format: "image/png",
     transparent: true,
     attribution: "mylayer",
-  }).addTo(map);
+  })
+
+  ls.addTo(map1)
 
 
 var baselayer = {
     "osm": osm,
-    "water color": watercolor,
+    "water color": googleHybrid,
 }
 
 var overlayers = {
@@ -75,12 +93,9 @@ var overlayers = {
     'Landslide': ls
 }
 
-L.control.layers(baselayer, overlayers).addTo(map)
+L.control.layers(baselayer, overlayers).addTo(map1)
 
-
-// sideBySide 
-L.control.sideBySide(ls, mf).addTo(map);
-
-
+map1.sync(map2)
+map2.sync(map1)
 
 </script>
