@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- leaflet css link  -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+
+    <title>WMS zoom to layer | Web-GIS with geoserver and leaflet</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
+
+<!-- leaflet js link  -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<!-- jquery link  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="./lib/wms-capabilities.min.js"></script>
+
+<script>
+  var map = L.map("map").setView([38.861, 71.2761], 7);
+
+  var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  });
+
+  osm.addTo(map);
+
+  var wms_layer = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+    layers: "topp:tasmania_roads",
+    format: "image/png",
+    transparent: true,
+    version: "1.1.0",
+    attribution: "Tasmania roads",
+  });
+
+  wms_layer.addTo(map);
+
+  var wms_url = "http://localhost:8080/geoserver/wms?server=wms&version=1.1.1&request=GetCapabilities";
+
+  axios.get(wms_url).then(res => {
+      var json = new WMSCapabilities(res.data).toJSON()
+    //   console.log(json)
+
+      const layers = json.Capability.Layer.Layer;
+    //   console.log(layers)
+
+      const layer = layers.filter(l => l.Name === 'topp:tasmania_roads')[0];
+
+      const bbox = layer.LatLonBoundingBox;
+      console.log(bbox)
+
+      map.fitBounds([
+          [bbox[1], bbox[0]],
+          [bbox[3], bbox[2]]
+      ])
+  })
+
+
+</script>
