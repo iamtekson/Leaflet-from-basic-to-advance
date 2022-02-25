@@ -62,14 +62,10 @@
     fillOpacity: 0.8,
   };
 
-  const markers = L.markerClusterGroup();
-
   // loading geojson
-  L.geoJSON(data, {
+  const lightData = L.geoJSON(data, {
     onEachFeature: function (feature, layer) {
-      
-      layer.on({
-        click: function(feature){
+
            const popupContent =
           '<h4 class = "text-primary">Street Light</h4>' +
           '<div class="container"><table class="table table-striped">' +
@@ -91,13 +87,14 @@
           "</td></tr>";
           
           layer.bindPopup(popupContent);
-        }
-      });
+
     },
     pointToLayer: function (feature, latlng) {
-      return markers.addLayer(L.circleMarker(latlng, geojsonMarkerOptions));
+      return L.circleMarker(latlng, geojsonMarkerOptions);
     },
-  }).addTo(map);
+  });
+  
+  const markers = L.markerClusterGroup().addLayer(lightData);
 
   // marker clustering
   map.addLayer(markers);
