@@ -69,7 +69,7 @@
     onEachFeature: function (feature, layer) {
       
       layer.on({
-        click: function(e){
+        click: function(feature){
            const popupContent =
           '<h4 class = "text-primary">Street Light</h4>' +
           '<div class="container"><table class="table table-striped">' +
