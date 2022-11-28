@@ -1,0 +1,6 @@
+
+1. Basic Leaflet Draw (Point, line, polygon)
+2. Edit geometry (Point, line, polygon)
+3. GeoJSON export from Draw tool
+4. Changing color of the Layer
+5. Other functionalities
