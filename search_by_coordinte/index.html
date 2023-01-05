@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Search location by Lat/Lng</title>
+
+    <!-- leaflet css  -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+        .search {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div class="leaflet-control search">
+        <input type="text" placeholder="Latitude,Longitude">
+        <button id="search-btn">Search</button>
+    </div>
+</body>
+
+</html>
+
+<!-- leaflet js  -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<!-- jquery  -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script>
+    // Map initialization 
+    var map = L.map('map').setView([28.3949, 84.1240], 8);
+
+    //osm layer
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    osm.addTo(map);
+
+    // marker add 
+    var marker = L.marker([28.3949, 84.1240]).addTo(map);
+
+    // search button click 
+    $('#search-btn').click(function(){
+        var latlng = $('input').val();
+        var latlngArr = latlng.split(',');
+        var lat = latlngArr[0];
+        var lng = latlngArr[1];
+        map.setView([lat, lng], 8);
+        marker.setLatLng([lat, lng]);
+    });
+
+</script>
