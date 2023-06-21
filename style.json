@@ -4,7 +4,7 @@
     "myTiles": {
       "type": "vector",
       "tiles": [
-        "https://vectortileservices3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Median_income_by_commune_france_vector_tile/VectorTileServer/tile/{z}/{y}/{x}.pbf"
+        "https://vectortileservices3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Median_income_by_commune_france_vector_tile/VectorTileServer"
       ],
       "minzoom": 0,
       "maxzoom": 14
