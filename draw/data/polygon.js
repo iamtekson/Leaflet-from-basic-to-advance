@@ -4,7 +4,9 @@ var geojsonData = {
     "features": [
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "name": "Polygon 1"
+        },
         "geometry": {
           "coordinates": [
             [
@@ -35,7 +37,9 @@ var geojsonData = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "name": "Polygon 2"
+        },
         "geometry": {
           "coordinates": [
             [
@@ -74,7 +78,9 @@ var geojsonData = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "name": "line 1"
+        },
         "geometry": {
           "coordinates": [
             [
@@ -103,7 +109,9 @@ var geojsonData = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "name": 'Point 1'
+        },
         "geometry": {
           "coordinates": [
             1.4402858572840955,
@@ -114,7 +122,9 @@ var geojsonData = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "name": 'Point 2'
+        },
         "geometry": {
           "coordinates": [
             1.7936314781204317,
@@ -125,7 +135,9 @@ var geojsonData = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "name": 'Point 3'
+        },
         "geometry": {
           "coordinates": [
             1.2119386684174174,
@@ -136,7 +148,9 @@ var geojsonData = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "name": 'Point 4'
+        },
         "geometry": {
           "coordinates": [
             1.2045208889981893,
@@ -147,7 +161,9 @@ var geojsonData = {
       },
       {
         "type": "Feature",
-        "properties": {},
+        "properties": {
+          "name": 'Polygon 3'
+        },
         "geometry": {
           "type": "Polygon",
           "coordinates": [

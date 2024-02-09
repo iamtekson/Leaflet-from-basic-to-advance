@@ -19,13 +19,14 @@
   <div id='map'></div>
 
 <script type="text/javascript">
-var map = L.map('map', {editable: true}).setView([43.1249, 1.254], 9)
+// initialize map and add osm layer 
+var map = L.map('map', {editable: true}).setView([43.1249, 1.254], 9);
 var osmlayer = L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', 
     {attribution: 'Data \u00a9 <a href="http://www.openstreetmap.org/copyright"> OpenStreetMap Contributors </a> Tiles \u00a9 HOT'});
 
 osmlayer.addTo(map);
 
-// Single feature edit
+// edit single feature 
 var polyline = L.polyline([
     [43.1249, 1.254],
     [43.55, 1.28]
@@ -33,18 +34,38 @@ var polyline = L.polyline([
 
 polyline.enableEdit();
 
-// GeoJSON layer with multiple features edit
-var geojsonLayer = L.geoJSON(geojsonData, {}).addTo(map);
+// polyline.disableEdit();
+
+//geojson load
+var geojsonLayer = L.geoJSON(geojsonData, {
+  style: function(feature){
+    switch(feature.geometry.type) {
+      case "Point": return {color: 'blue'}
+      case "LineString": return {color: 'red'}
+      case "Polygon": return {color: "green", fillColor: 'yellow'}
+    }
+  }
+}).addTo(map);
+
 map.fitBounds(geojsonLayer.getBounds());
-geojsonLayer.eachLayer(function (layer) {
-    layer.enableEdit();
+
+//enable edit geojson
+geojsonLayer.eachLayer(function(layer){
+  layer.enableEdit()
 });
 
-// add a download link as a popup in each feature
+//save the edited geojson
 geojsonLayer.eachLayer(function (layer) {
-    var popupContent = '<a href="data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(layer.toGeoJSON())) + '" download="data.json">Download</a>';
+    var popupContent = "Name: " + layer.feature.properties.name;
     layer.bindPopup(popupContent);
+}); 
+
+//save the edited geojson
+map.on('editable:editing', function(e){
+  // add popup to the edited layer to download the edited geojson
+  e.layer.bindPopup('<a href="data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(geojsonLayer.toGeoJSON())) + '" download="geojson.json">Download GeoJSON</a>');
 });
+
 
 </script>
 </body>
