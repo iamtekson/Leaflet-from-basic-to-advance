@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaflet Tutorial</title>
+
+    <!-- leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!-- omnivore  -->
+    <script src="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map">
+      <div class="leaflet-control coordinate"></div>
+    </div>
+
+    <script>
+      // Map initialization
+      var map = L.map("map").setView([28.3949, 84.124], 8);
+
+      //osm layer
+      var osm = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }
+      );
+      osm.addTo(map);
+
+      // load geojson file
+      var geojsonLayer = omnivore
+        .geojson("../data/geojson/street.json")
+        .addTo(map);
+
+      // load kml
+      var kmlLayer = omnivore.kml("../data/kml/line.kml").addTo(map);
+
+      //load gpx file
+      var gpxLayer = omnivore
+        .gpx("../data/gpx/track2.gpx", {
+          style: {
+            color: "red",
+            weight: 5,
+          },
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(feature.properties.ele);
+            console.log("feature", feature);
+          },
+        })
+        .addTo(map);
+
+      // console.log(gpxLayer);
+
+      // add popup in gpxLayer
+      gpxLayer.on("ready", function () {
+        // map.fitBounds(gpxLayer.getBounds());
+
+        // add popup content
+        gpxLayer.eachLayer(function (layer) {
+          layer.bindPopup("<h3>" + layer.feature.properties.name + "</h3>");
+        });
+      });
+
+      // load wkt
+      var wktLayer = omnivore.wkt("../data/wkt/line.wkt").addTo(map);
+
+      wktLayer.on("ready", function () {
+        // map.fitBounds(wktLayer.getBounds());
+        // change the style
+        wktLayer.eachLayer(function (layer) {
+          layer.setStyle({
+            color: "green",
+            weight: 5,
+          });
+        });
+      });
+
+      // load csv
+      var csvLayer = omnivore.csv("../data/csv/pokhara.csv").addTo(map);
+
+      csvLayer.on("ready", function () {
+        // map.fitBounds(csvLayer.getBounds());
+        // add popup content
+        csvLayer.eachLayer(function (layer) {
+          layer.bindPopup("<h3>" + layer.feature.properties.name + "</h3>");
+        });
+      });
+
+      // console.log(csvLayer);
+
+      // zoom to kml layer
+      // gpxLayer.on("ready", function () {
+      //   map.fitBounds(gpxLayer.getBounds());
+      // });
+    </script>
+  </body>
+</html>
