@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Share your location</title>
+
+    <!-- leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        width: 100%;
+        height: 100vh;
+        cursor: crosshair;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+
+    <!-- leaflet hash for sharing location  -->
+    <script src="leaflet-hash.js"></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.js"
+      charset="utf-8"
+    ></script>
+
+    <script>
+      // Map initialization
+      var map = L.map("map").setView([28.3949, 84.124], 8);
+
+      var hash = new L.Hash(map);
+
+      //osm layer
+      var osm = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }
+      );
+      osm.addTo(map);
+
+      // click event to add marker in map
+      map.on("click", function (e) {
+        var coord = e.latlng;
+        var lat = coord.lat;
+        var lng = coord.lng;
+
+        // zoom map to new location
+        map.flyTo(new L.LatLng(lat, lng));
+
+        L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup(
+            "<h3> Your Location </h3>" +
+              "Latitude: " +
+              lat +
+              "<br> Longitude:  " +
+              lng +
+              '<br><a href="https://www.google.com/maps/search/?api=1&query=' +
+              lat +
+              "," +
+              lng +
+              '" target="_blank">Open in Google Maps</a>'
+          )
+          .openPopup();
+      });
+
+      L.control.locate().addTo(map);
+    </script>
+  </body>
+</html>
