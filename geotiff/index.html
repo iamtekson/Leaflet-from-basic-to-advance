@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Load Geotiff</title>
+
+    <!-- leaflet cdn link -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/georaster"></script>
+    <!-- //georaster layer for leaflet  -->
+    <script src="https://unpkg.com/georaster-layer-for-leaflet/dist/georaster-layer-for-leaflet.min.js"></script>
+    <script src="https://unpkg.com/geoblaze"></script>
+
+    <script>
+      // Map initialization
+      var map = L.map("map").setView([28.3949, 84.124], 7);
+
+      //osm layer
+      var osm = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }
+      );
+      osm.addTo(map);
+
+      // load geotiff layer
+      fetch("../data/raster/nepal_lc_2020.tif")
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => {
+          parseGeoraster(arrayBuffer).then((georaster) => {
+            // console.log("georaster:", georaster);
+
+            var layer = new GeoRasterLayer({
+              georaster: georaster,
+              opacity: 0.7,
+              pixelValuesToColorFn: function (value) {
+                // if value
+                if (value < 50) {
+                  return "yellow";
+                } else if (value > 50 && value < 130) {
+                  return "green";
+                } else if (value < 130 && value > 180) {
+                  return "#93E9BE";
+                } else if (value == 190) {
+                  return "red";
+                } else if (value == 200) {
+                  return "#966400";
+                } else if (value == 210) {
+                  return "blue";
+                } else if (value == 220) {
+                  return "#ffffff";
+                } else {
+                  return "transparent";
+                }
+              },
+
+              resolution: 128, // optional parameter for adjusting display resolution
+            });
+            // layer.addTo(map);
+
+            // map.fitBounds(layer.getBounds());
+          });
+        });
+
+      //srtm dem data
+      fetch("../data/raster/srtm_57_08_1.tif")
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => {
+          parseGeoraster(arrayBuffer).then((georaster) => {
+            // console.log("georaster:", georaster);
+
+            var layer = new GeoRasterLayer({
+              georaster: georaster,
+              opacity: 0.7,
+              resolution: 128, // optional parameter for adjusting display resolution
+            });
+            layer.addTo(map);
+
+            map.fitBounds(layer.getBounds());
+
+            //map onclick event
+            map.on("click", function (event) {
+              console.log(event, "event");
+              var lat = event.latlng.lat;
+              var lng = event.latlng.lng;
+              var elevation = geoblaze.identify(georaster, [lng, lat]);
+
+              // remove previous marker
+              map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                  map.removeLayer(layer);
+                }
+              });
+
+              //add popup with marker
+              var marker = L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup("Elevation: " + elevation)
+                .openPopup();
+            });
+          });
+        });
+    </script>
+  </body>
+</html>
