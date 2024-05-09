@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #map {
+            height: 900px;
+            width: 100%;
+        }
+       
+    </style>
+</head>
+<body>
+    <div id = "map"></div>
+    <script>
+        var map = L.map('map').setView([10.0364634,105.7875821], 13);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+//b. Thao tác click trên bản đồ hiển thị marker: click đến đâu thì hiển marker đến đó 
+var marker;
+map.on('click',function(e){
+    if (marker){
+        map.removeLayer(marker);
+    }
+    marker = L.marker(e.latlng).addTo(map).on('click',e=>e.target.remove());
+})
+//Thao tác click trên bản đồ hiển thị marker cuối cùng
+
+// L.marker([10.0471726,105.7678259],{draggable:true}).addTo(map)
+//     .bindPopup('Đại học kỹ thuật công nghệ')
+//     .openPopup();
+//     d. Dùng mảng để lưu trữ toạ độ điểm của quận thành phố cần thơ
+// marker các quận
+// Khi click trên marker sẽ hiện hiện tên Quận bằng popup 
+    // var Cantho =[
+    //     {name:'Quận Ninh Kiều',latlng:[10.035323,105.7555905]},
+    //     {name:'Quận Bình Thủy',latlng:[10.0663892,105.7543944]},
+    // ];
+    // Cantho.forEach(function(e){
+    //     var marker = L.marker(e.latlng).addTo(map).bindPopup(e.name);
+    // })
+// Bài 2: Tuỳ chỉnh Popup 
+// a. Hiển thị toạ độ điểm khi người dùng click chuột 
+// var popup = L.popup()
+// map.on('click',function(e){
+//     popup.setLatLng(e.latlng)
+//     .setContent('Vĩ độ:'+e.latlng.lat.toFixed(3)+'<br>Kinh độ:'+e.latlng.lat.toFixed(3))
+//     .openOn(map);
+    
+// })
+// b. Hiện thị Popup với nội dung bao gồm tên và logo Trường Đại học Kỹ thuật– Công 
+// nghệ Cần Thơ
+var popup = L.popup()
+    .setLatLng([10.0466602, 105.7652407])
+    .setContent(
+        '<div style="text-align: center; color:red;">' +
+            '<h2>Đại Học Kỹ Thuật<br> Công Nghệ Cần Thơ</h2>' +
+            '<img src="https://ctuet.edu.vn/View/assets/images/logo.png" height="100" width="100">' +
+        '</div>'
+    )
+    .openOn(map);
+
+
+    // function onLocationFound(e) {
+	// 	const radius = e.accuracy / 2;
+
+	// 	const locationMarker = L.marker(e.latlng).addTo(map)
+	// 		.bindPopup(`Bạn đang ở trong ${radius} mét từ điểm này`).openPopup();
+
+	// 	const locationCircle = L.circle(e.latlng, radius).addTo(map);
+	// }
+
+	// function onLocationError(e) {
+	// 	alert(e.message);
+	// }
+
+	// map.on('locationfound', onLocationFound);
+	// map.on('locationerror', onLocationError);
+
+	// map.locate({setView: true, maxZoom: 16});
+
+//    map.on('locationfound',function(e){
+//    L.marker(e.latlng).addTo(map).bindPopup('Tôi ở đây').openPopup();
+//    })
+//    map.locate({setView: true, watch: true, maxZoom: 17});
+L.Control.geocoder().addTo(map);
+
+
+
+    </script>
+</body>
+</html>
