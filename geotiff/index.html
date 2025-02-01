@@ -77,25 +77,7 @@
                 }
               },
 
-              resolution: 128, // optional parameter for adjusting display resolution
-            });
-            // layer.addTo(map);
-
-            // map.fitBounds(layer.getBounds());
-          });
-        });
-
-      //srtm dem data
-      fetch("../data/raster/srtm_57_08_1.tif")
-        .then((response) => response.arrayBuffer())
-        .then((arrayBuffer) => {
-          parseGeoraster(arrayBuffer).then((georaster) => {
-            // console.log("georaster:", georaster);
-
-            var layer = new GeoRasterLayer({
-              georaster: georaster,
-              opacity: 0.7,
-              resolution: 128, // optional parameter for adjusting display resolution
+              resolution: 256, // optional parameter for adjusting display resolution
             });
             layer.addTo(map);
 
@@ -119,6 +101,45 @@
               var marker = L.marker([lat, lng])
                 .addTo(map)
                 .bindPopup("Elevation: " + elevation)
+                .openPopup();
+            });
+          });
+        });
+
+      //srtm dem data
+      fetch("../data/raster/srtm_57_08_1.tif")
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => {
+          parseGeoraster(arrayBuffer).then((georaster) => {
+            // console.log("georaster:", georaster);
+
+            var layer = new GeoRasterLayer({
+              georaster: georaster,
+              opacity: 0.7,
+              resolution: 128, // optional parameter for adjusting display resolution
+            });
+            // layer.addTo(map);
+
+            // map.fitBounds(layer.getBounds());
+
+            //map onclick event
+            map.on("click", function (event) {
+              console.log(event, "event");
+              var lat = event.latlng.lat;
+              var lng = event.latlng.lng;
+              var elevation = geoblaze.identify(georaster, [lng, lat]);
+
+              // remove previous marker
+              map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                  map.removeLayer(layer);
+                }
+              });
+
+              //add popup with marker
+              var marker = L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup("<b>Land Cover</b>: Urban Area")
                 .openPopup();
             });
           });

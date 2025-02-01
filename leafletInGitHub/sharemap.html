@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- leaflet css -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+      crossorigin=""
+    />
+
+    <!-- leaflet js -->
+    <script
+      src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+      integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+      crossorigin=""
+    ></script>
+
+    <title>Host Leaflet Map in GitHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+
+  <script>
+    // basic leaflet map with setview
+    var map = L.map("map").setView([28.3949, 84.124], 7);
+
+    // OpenStreetMap map
+    var osmMap = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }
+    ).addTo(map);
+
+    // Load geojson data using fetch API
+    fetch("./data/nepal_provinces.json")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        L.geoJSON(data, {
+          // style function
+          style: function (feature) {
+            return {
+              color: "black",
+              weight: 2,
+              fillOpacity: 0.5,
+              fillColor:
+                "#" + Math.floor(Math.random() * 16777215).toString(16),
+            };
+          },
+
+          // popup function
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(
+              "<h1>" +
+                feature.properties.PR_NAME +
+                "</h1>" +
+                "<p>Province No: " +
+                feature.properties.PROVINCE +
+                "</p>"
+            );
+          },
+        }).addTo(map);
+      });
+  </script>
+</html>
